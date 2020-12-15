@@ -6,7 +6,7 @@ import random
 
 sad_words=["sad","depressed", "regret","hollow inside"
 ,"miserable","fuck me","save me from my self",
-"broken","sorry", "lonely"]
+"broken","sorry", "lonely","empty"]
 
 starter_encourage=["It's okay, sometimes i feel it too","There is always light at the end of the tunnel",
 "Hang in there","Life is an expierence , aint it..",
