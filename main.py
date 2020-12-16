@@ -3,6 +3,7 @@ import os
 import requests
 import json
 import random
+from replit import db
 
 sad_words=["sad","depressed", "regret","hollow inside"
 ,"miserable","fuck me","save me from my self",
@@ -14,6 +15,29 @@ starter_encourage=["It's okay, sometimes i feel it too","There is always light a
 "We all don't have to be great, just be urself..","Peace .."]
 
 client =discord.Client()
+
+def update (msg):
+  if "encourage" in db.keys():
+    encourage = db["encourage"]
+    if msg not in encourage:
+      #print("came in ")
+      encourage.append(msg)
+      db["encourage"]= encourage
+  else:
+    #encourage=[]
+    db["encourage"]=[msg]
+
+def delete (msg):
+  if "encourage" in db.keys():
+    encourage = db["encourage"]
+    if msg in encourage:
+      encourage.remove(msg)
+      db["encourage"]=encourage
+  else:
+    pass        
+
+  
+
 
 def get_quotes():
   response = requests.get("https://zenquotes.io/api/random")
@@ -37,9 +61,22 @@ async def on_message(message):
   if (msg.startswith("$inspire") or msg.startswith("$motivate")):
     quote = get_quotes()
     await message.channel.send(quote)
-  
+  if "encourage" in db.keys():
+    options = starter_encourage + db["encourage"]
+  else:
+    options =   starter_encourage
   if any(word in msg for word in sad_words):
-    await message.channel.send(random.choice(starter_encourage))
+    await message.channel.send(random.choice(options))
 
+  #update repotoire
+  if (msg.startswith("$new")):
+    encourage = msg.split("$new ",1)[1]
+    update(encourage)
+    await message.channel.send("Thanxx, i will remeber it !")
+  #delete repotoire
+  if (msg.startswith("$del")):
+    encourage = msg.split("$del ",1)[1]
+    delete(encourage)
+    await message.channel.send("It's hard to forget things,but o.k.")  
 
 client.run(os.getenv('TOKEN'))
